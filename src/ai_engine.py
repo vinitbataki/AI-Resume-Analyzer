@@ -1,27 +1,27 @@
 import os
 import streamlit as st
-import google.generativeai as genai
 from dotenv import load_dotenv
+from google import genai
 
 # Load environment variables
-load_dotenv(override=True)
+load_dotenv()
 
-# Get API key from .env or Streamlit Secrets
+# Get API key
 API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not API_KEY:
-    API_KEY = st.secrets.get("GEMINI_API_KEY")
+    try:
+        API_KEY = st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        API_KEY = None
 
-st.write("DEBUG KEY PREFIX:", API_KEY[:10] if API_KEY else "NONE")
-
-# Configure Gemini
-if API_KEY:
-    genai.configure(api_key=API_KEY)
+# Create Gemini client
+client = genai.Client(api_key=API_KEY) if API_KEY else None
 
 
 def generate_resume_analysis(resume_text, job_description):
     if not API_KEY:
-        return "Error: Gemini API key not found."
+        return "Error: GEMINI_API_KEY not found."
 
     prompt = f"""
 You are an expert HR Manager and Senior Applicant Tracking System (ATS) consultant.
@@ -33,9 +33,9 @@ You must start your response with a score line formatted exactly like this:
 
 [SCORE: XX]
 
-Where XX is a realistic integer match percentage from 0 to 100 based on the resume alignment.
+Where XX is a realistic integer match percentage from 0 to 100.
 
-Then provide the rest of your feedback using this structure:
+Then provide:
 
 ### 🔍 Missing Keywords & Skills
 - List important skills or keywords missing from the resume.
@@ -51,9 +51,10 @@ JOB DESCRIPTION:
 """
 
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
-
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+        )
 
         return response.text
 
