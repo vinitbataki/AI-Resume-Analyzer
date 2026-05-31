@@ -1,6 +1,4 @@
-HEAD
-Aapka README.md pehle se bahut professional hai! Maine ismein aapke naye features (**Enhancement, AI Alignment, aur Download functionality**) ko seamlessly integrate kar diya hai.
-Is content ko copy karke apni GitHub README.md file mein purane wale se **replace** kar dein.
+
 # 🚀 SmartScan ATS Optimizer
 > An AI-powered resume analyzer that scores your resume, matches keywords, provides actionable feedback, and **automatically enhances/aligns your resume** for specific job descriptions — built with Python, Streamlit, and Groq API.
 > 
