@@ -58,4 +58,5 @@ JOB DESCRIPTION:
         return response.text
 
     except Exception as e:
+        st.error(repr(e))
         return f"Gemini Engine Connection Error: {str(e)}"
