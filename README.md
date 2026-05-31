@@ -3,9 +3,7 @@
 > An AI-powered resume analyzer that scores your resume, matches keywords, provides actionable feedback, and **automatically enhances/aligns your resume** for specific job descriptions — built with Python, Streamlit, and Groq API.
 > 
 ## 📸 Demo
-*(Yahan apne app ka ek screenshot upload karke uska link daal dein)*
-
-> Run live at: [INSERT YOUR STREAMLIT APP LINK HERE]
+> Run live at: [https://ai-resume-analyzer-hy7ep6uvnpbruzbnvj6ojr.streamlit.app/]
 > 
 ## ✨ Key Features
  * 📄 **PDF Resume Upload** — Extracts text from any PDF resume automatically.
@@ -67,6 +65,7 @@ streamlit run app.py
  * No resume data is stored on our servers; processing happens in-memory.
 ## 👤 Author
 Built by **Vinit Bataki**
- * GitHub
- * LinkedIn
+ * GitHub :- https://github.com/vinitbataki?hl=en-IN
+ * LinkedIn :- https://www.linkedin.com/in/vinit-bataki-8b9944314?utm_source=share_via&utm_content=profile&utm_medium=member_android
+ * 
 *SmartScan ATS — Because your career deserves an optimized start.*
