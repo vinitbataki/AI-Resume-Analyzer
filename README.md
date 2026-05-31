@@ -1,3 +1,4 @@
+HEAD
 # 🎯 SmartScan ATS
 
 > An AI-powered resume analyser that scores your resume, matches keywords, and gives actionable feedback — built with Python, Streamlit, and the Anthropic Claude API.
@@ -227,3 +228,6 @@ Built by **[ Vinit Bataki ]**
 ---
 
 *SmartScan ATS — because your resume deserves a second opinion.*
+
+# AI-Resume-Analyzer
+ 69de2e299c7c2079ee8964bf2fcee095c30b1ff0
