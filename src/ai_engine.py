@@ -12,6 +12,8 @@ API_KEY = os.getenv("GEMINI_API_KEY")
 if not API_KEY:
     API_KEY = st.secrets.get("GEMINI_API_KEY")
 
+print("API KEY FOUND:" , API_KEY[:10] if API_KEY else "NONE")
+
 # Configure Gemini
 if API_KEY:
     genai.configure(api_key=API_KEY)
