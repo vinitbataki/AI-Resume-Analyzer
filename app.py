@@ -1,85 +1,55 @@
 import streamlit as st
 import os
-import re
+from src.ai_engine import generate_resume_analysis, enhance_and_align_resume
 from pypdf import PdfReader
-from dotenv import load_dotenv
-from src.ai_engine import generate_resume_analysis
 
-# Load environment variables
-load_dotenv(override=True)
+# Page Configuration
+st.set_page_config(page_title="AI ATS Optimizer", page_icon="📄")
+st.title("📄 AI Resume ATS Optimizer")
+
+# Sidebar for Setup
+st.sidebar.header("Configuration")
+job_description = st.sidebar.text_area("Paste Job Description here:")
+
+# File Uploader
+uploaded_file = st.file_uploader("Upload your Resume (PDF)", type=["pdf"])
 
 def extract_text_from_pdf(file):
-    try:
-        reader = PdfReader(file)
-        text = ""
-        for page in reader.pages:
-            content = page.extract_text()
-            if content:
-                text += content + "\n"
-        return text
-    except Exception as e:
-        return f"Error reading PDF: {str(e)}"
+    reader = PdfReader(file)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text()
+    return text
 
-# Initialize Session State
-if "analysis_results" not in st.session_state:
-    st.session_state.analysis_results = None
-
-st.set_page_config(page_title="SmartScan ATS", layout="wide")
-
-# CSS Styling
-st.markdown("""
-    <style>
-    .main .block-container { font-family: sans-serif; padding-top: 2rem; }
-    h1 { color: #1E3A8A !important; }
-    div.stButton > button:first-child { background-color: #1E3A8A; color: white; }
-    </style>
-""", unsafe_allow_html=True)
-
-st.title("🚀 SmartScan ATS Optimizer")
-st.subheader("Powered by Groq API")
-
-# Sidebar
-with st.sidebar:
-    st.markdown("# ⚙️ Control Panel")
-    st.markdown("### 🌐 System Node Status")
+# Main Logic
+if uploaded_file and job_description:
+    resume_text = extract_text_from_pdf(uploaded_file)
     
-    # Check for GROQ_API_KEY
-    api_key = os.getenv("GROQ_API_KEY") or st.secrets.get("GROQ_API_KEY")
-    if api_key:
-        st.success("Groq API Node: Connected")
-    else:
-        st.error("Groq API Node: Disconnected")
-
-# Main Layout
-col1, col2 = st.columns(2)
-with col1:
-    job_description = st.text_area("Paste the job description here...", height=300)
-with col2:
-    uploaded_file = st.file_uploader("Upload your resume (PDF)", type=["pdf"])
-
-if st.button("Analyze System Match", type="primary"):
-    if not job_description or not uploaded_file:
-        st.warning("Please provide both a Job Description and a Resume.")
-    else:
-        with st.spinner("Analyzing..."):
-            resume_text = extract_text_from_pdf(uploaded_file)
-            raw_report = generate_resume_analysis(resume_text, job_description)
-            
-            # Parsing logic
-            score_match = re.search(r"\[SCORE:\s*(\d+)", raw_report)
-            score_value = int(score_match.group(1)) if score_match else 50
-            clean_report = re.sub(r"\[SCORE:.*?\]", "", raw_report).strip()
-            
-            st.session_state.analysis_results = {"score": score_value, "report": clean_report}
+    if st.button("🚀 Analyze Resume"):
+        with st.spinner("Analyzing your resume..."):
+            analysis = generate_resume_analysis(resume_text, job_description)
+            st.session_state.analysis_results = analysis
             st.rerun()
 
 # Display Results
-if st.session_state.analysis_results:
-    res = st.session_state.analysis_results
-    st.markdown("## 📊 System Match Analytics")
-    st.metric("Overall ATS Match Score", f"{res['score']}%")
-    st.progress(res['score'] / 100.0)
+if "analysis_results" in st.session_state:
     st.markdown("---")
-    st.markdown("## 📋 Detailed Evaluation Report")
-    st.markdown(res['report'])
-    st.download_button("📥 Export Report", data=res['report'], file_name="Report.txt")
+    st.subheader("📊 Analysis Results")
+    st.markdown(st.session_state.analysis_results)
+    
+    # Enhancement Section
+    st.markdown("---")
+    st.subheader("✨ Need a better version?")
+    if st.button("Generate Enhanced & Aligned Resume"):
+        with st.spinner("Reformatting and aligning..."):
+            enhanced = enhance_and_align_resume(resume_text, job_description)
+            st.session_state.enhanced_resume = enhanced
+            st.rerun()
+
+# Display Enhanced Resume
+if "enhanced_resume" in st.session_state:
+    st.markdown("## 📄 Your Enhanced & Aligned Resume")
+    st.markdown(st.session_state.enhanced_resume)
+    st.download_button("📥 Download Enhanced Resume (Markdown)", 
+                       data=st.session_state.enhanced_resume, 
+                       file_name="Enhanced_Resume.md")
